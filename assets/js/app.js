@@ -2,6 +2,7 @@
 // America.
 //src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCkUOdZ5y7hMm0yrcCQoCvLwzdM6M8s5qk&callback=initMap">
 // First, create an object containing LatLng and population for each city.
+
 var citymap = {
   sanjose: {
     center: {lat: 37.279518, lng: -121.867905},
@@ -29,6 +30,7 @@ var citymap = {
 };
 
 function initMap() {
+  "use strict";
   // Create the map.
   var map = new google.maps.Map(document.getElementById('map'), {
     zoom: 4,
