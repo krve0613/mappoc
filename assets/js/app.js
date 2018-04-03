@@ -10,25 +10,29 @@ var citymap = {
             lng: -121.867905
         },
         storage: 800000,
-        capacity: 200000
+        capacity: 200000,
+        status:true,
+        name: 'sanjose'
     },
     newyork: {
         center: {
             lat: 40.714,
             lng: -74.005
         },
-        storage: 680000,
-        capacity: 100000,
-        status: false
+        storage: 90000,
+        capacity: 10000,
+        status: false,
+        name: 'newyork'
     },
-    losangeles: {
+    shanghai: {
         center: {
-            lat: 34.052,
-            lng: -118.243
+            lat: 31.2304,
+            lng: 121.4737
         },
         storage: 385770,
         capacity: 1000000,
-        status: false
+        status: false,
+        name: 'Shanghai'
     },
     vancouver: {
         center: {
@@ -37,18 +41,30 @@ var citymap = {
         },
         storage: 603502,
         capacity: 200000,
-        status: true
+        status: true,
+        name: 'vancouver'
+    },
+    banglore: {
+        center: {
+            lat: 12.972442,
+            lng: 77.580643
+        },
+        storage: 600000,
+        capacity: 400000,
+        status: true,
+        name: 'banglore'
     }
 };
+var data = [];
 
 function initMap() {
     "use strict";
     // Create the map.
     var map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 4,
+        zoom: 2.2,
         center: {
-            lat: 37.090,
-            lng: -95.712
+            lat: 50.090,
+            lng: -5.712
         },
         mapTypeId: 'terrain'
     });
@@ -58,35 +74,109 @@ function initMap() {
     // Note: We scale the area of the circle based on the population.
     for (var city in citymap) {
         // Add the circle for this city to the map.
-        var cityCircle = new google.maps.Circle({
-            strokeColor: '#008000',
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: '#008000',
-            fillOpacity: 0.35,
-            map: map,
-            center: citymap[city].center,
-            radius: Math.sqrt(citymap[city].storage) * 100
-        });
 
         if (citymap[city].status == false) {
-            var capCircle = new google.maps.Circle({
+            var cityCircle = new google.maps.Circle({
                 strokeColor: '#FF0000',
                 strokeOpacity: 0.8,
                 strokeWeight: 2,
                 fillColor: '#FF0000',
                 fillOpacity: 0.35,
                 map: map,
+                clickable: true,
                 center: citymap[city].center,
-                radius: Math.sqrt(citymap[city].storage) * 100
+                radius: Math.sqrt(citymap[city].storage) * 500
+            });
+        } else {
+             cityCircle = new google.maps.Circle({
+                strokeColor: '#008000',
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: '#008000',
+                fillOpacity: 0.35,
+                map: map,
+                clickable: true,
+                center: citymap[city].center,
+                radius: Math.sqrt(citymap[city].storage) * 500
             });
         }
+        
+        cityCircle.data = citymap[city];
+        
+
+        var contentString = '<div id="content">' +
+            '<div id="siteNotice">' +
+            '</div>' +
+            '<h1 id="firstHeading" class="firstHeading">Infrastructure</h1>' +
+            '<div id="bodyContent">' +
+            '<p> ' +
+            '<div id="here_table">' +
+            '<table width="1000" border="0">' +
+            '<tr><th>Projects</th>' +
+            '<th>Data</th></tr>' +
+            '<tr><td>openstack</td>' +
+            '<td>60</td></tr>' +
+            '<tr><td>CMR4</td>' +
+            '<td>60</td></tr>' +
+            '<tr><td>infra</td>' +
+            '<td>100</td></tr>' +
+            '</table>' +
+            'for more data and chart representation click on this Marker ' +
+            '<button onclick="myFunction()">here</button>' +
+            '</div>' +
+            '</p>' +
+            '</div>' +
+            '</div>';
+
+        var infowindow3 = new google.maps.InfoWindow({
+            content: contentString
+        });
+
+        google.maps.event.addListener(cityCircle, 'mouseover', function(ev) {
+            infowindow3.setContent(contentString);
+            infowindow3.setPosition(this.data.center);
+            infowindow3.open(map);
+        });
+
+        google.maps.event.addListener(cityCircle, 'mouseout', function(ev) {
+            infowindow3.close();
+        });
+
+        google.maps.event.addListener(cityCircle,'click', function(ev){
+            window.parent.scroll(100, 200);
+            //creating toggle view
+            var modal = document.getElementById('myModal');
+
+            // Get the <span> element that closes the modal
+            var span = document.getElementsByClassName("close")[0];
+
+            // When the user clicks the button, open the modal 
+                modal.style.display = "block";
+
+            // When the user clicks on <span> (x), close the modal
+            span.onclick = function() {
+                modal.style.display = "none";
+                window.parent.scroll(0, -100);
+            }
+
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+        });
+
+
+
     }
 
-    var contentString1 = '<div id="content">' +
+
+    
+    /*var contentString1 = '<div id="content">' +
         '<div id="siteNotice">' +
         '</div>' +
-        '<h1 id="firstHeading" class="firstHeading">Sanjose</h1>' +
+        '<h1 id="firstHeading" class="firstHeading">Infrastructure</h1>' +
         '<div id="bodyContent">' +
         '<p><b>Sanjose</b>, has total capacity of <b>100</b>,  ' +
         'for more data and chart representation click on this link ' +
@@ -118,27 +208,32 @@ function initMap() {
         lat: 37.279518,
         lng: -121.86
     };
-    var marker = new google.maps.Marker({
+
+    /*var seattle = {
+        lat: 47.6062,
+        lng: -122.3321
+    };*/
+
+    /*var marker = new google.maps.Marker({
         position: sanjose,
         map: map,
         title: 'Sanjose (Total capacity:100)',
     });
 
-
     marker.addListener('mouseover', function() {
         infowindow.open(map, this);
     });
 
-    function myFunction() {
+    /*function myFunction() {
         window.parent.scroll(1000, 1000);
     }
     // assuming you also want to hide the infowindow when user mouses-out
-    /*marker.addListener('mouseout', function() {
+    marker.addListener('mouseout', function() {
         infowindow.close();
         });*/
 
-    var herebtn = document.getElementById('here');
-    //document.getElementById("here").type = "button";
+    /*var herebtn = document.getElementById('here');
+    // document.getElementById("here").type = "button";
 
     herebtn.onclick = function() {
         window.scroll(1000, 1000);
@@ -151,10 +246,12 @@ function initMap() {
 
     herebtn.onclick = function() {
         alert("hi");
-    }
+    }*/
 
     marker.addListener('click', function() {
+        window.parent.scroll(100, 100);
         //window.scrollTo(0,document.documentElement.scrollHeight);
+
         var button1 = document.createElement("button");
         button1.innerHTML = "CMR4";
         //button1.appendChild(piechart);
@@ -167,10 +264,10 @@ function initMap() {
         var button4 = document.createElement("button");
         button4.innerHTML = "VMware";
         //Total number of VMs per Vcenter
-        button4.appendChild(piechart);
+        //button4.appendChild(piechart);
 
         // 2. Append somewhere
-        var body = document.getElementsByTagName("body")[0];
+        //var body = document.getElementsByTagName("body")[0];
         body.appendChild(button1);
         body.appendChild(button2);
         body.appendChild(button3);
@@ -182,8 +279,8 @@ function initMap() {
         });
 
         button2.addEventListener("click", function() {
-            //alert("did something");
-            modelblock();
+            alert("did something");
+            //modelblock();
 
         });
 
@@ -193,14 +290,14 @@ function initMap() {
         });
 
         button4.addEventListener("click", function() {
-            //alert("did something");
-            drawChart();
+            alert("did something");
+            //drawChart();
 
         });
 
-        infowindow.open(map, marker);
+        //infowindow.open(map, marker);
 
-        function drawChart() {
+        /*function drawChart() {
 
 
             var data = google.visualization.arrayToDataTable([
@@ -221,7 +318,7 @@ function initMap() {
 
             chart.draw(data, options);
 
-        }
+        }*/
 
     });
 
@@ -229,7 +326,8 @@ function initMap() {
 
     //google.maps.event.addDomListener(window, "load", initMap);
 }
- 
+
+
 
 function modelblock() {
     var modal = document.getElementById('myModal');
