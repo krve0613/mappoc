@@ -3,58 +3,8 @@
 //src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCkUOdZ5y7hMm0yrcCQoCvLwzdM6M8s5qk&callback=initMap">
 // First, create an object containing LatLng and population for each city.
 
-var citymap = {
-    sanjose: {
-        center: {
-            lat: 37.279518,
-            lng: -121.867905
-        },
-        storage: 800000,
-        capacity: 200000,
-        status:true,
-        name: 'sanjose'
-    },
-    newyork: {
-        center: {
-            lat: 40.714,
-            lng: -74.005
-        },
-        storage: 90000,
-        capacity: 10000,
-        status: false,
-        name: 'newyork'
-    },
-    shanghai: {
-        center: {
-            lat: 31.2304,
-            lng: 121.4737
-        },
-        storage: 385770,
-        capacity: 1000000,
-        status: false,
-        name: 'Shanghai'
-    },
-    vancouver: {
-        center: {
-            lat: 49.25,
-            lng: -123.1
-        },
-        storage: 603502,
-        capacity: 200000,
-        status: true,
-        name: 'vancouver'
-    },
-    banglore: {
-        center: {
-            lat: 12.972442,
-            lng: 77.580643
-        },
-        storage: 600000,
-        capacity: 400000,
-        status: true,
-        name: 'banglore'
-    }
-};
+var infowindow;
+var currCircle;
 var data = [];
 
 function initMap() {
@@ -67,6 +17,10 @@ function initMap() {
             lng: -5.712
         },
         mapTypeId: 'terrain'
+    });
+
+    infowindow = new google.maps.InfoWindow({
+        content: ''
     });
 
 
@@ -102,12 +56,24 @@ function initMap() {
         }
         
         cityCircle.data = citymap[city];
-        
+
+        bindInfoWindow(cityCircle, map, infowindow, "<p>" + "sometext" + "</p>");
+
+    }
+}
+
+
+function bindInfoWindow(cityCircle, map, infowindow, html) {
+
+
+    google.maps.event.addListener(cityCircle, 'mouseover', function(ev) {
+
+        currCircle = cityCircle.data.name;
 
         var contentString = '<div id="content">' +
             '<div id="siteNotice">' +
             '</div>' +
-            '<h1 id="firstHeading" class="firstHeading">Infrastructure</h1>' +
+            '<h1 id="firstHeading" class="firstHeading">Infrastructure,' + cityCircle.data.name + '</h1>' +
             '<div id="bodyContent">' +
             '<p> ' +
             '<div id="here_table">' +
@@ -122,54 +88,83 @@ function initMap() {
             '<td>100</td></tr>' +
             '</table>' +
             'for more data and chart representation click on this Marker ' +
-            '<button onclick="myFunction()">here</button>' +
+            '<button onclick="myFunction(currCircle)" id="herebtn">here</button>' +
             '</div>' +
             '</p>' +
             '</div>' +
             '</div>';
 
-        var infowindow3 = new google.maps.InfoWindow({
+        /*var infowindow3 = new google.maps.InfoWindow({
             content: contentString
-        });
+        });*/
 
-        google.maps.event.addListener(cityCircle, 'mouseover', function(ev) {
-            infowindow3.setContent(contentString);
-            infowindow3.setPosition(this.data.center);
-            infowindow3.open(map);
-        });
+        infowindow.setContent(contentString);
+        infowindow.setPosition(this.data.center);
+        infowindow.open(map);
+    });
 
-        google.maps.event.addListener(cityCircle, 'mouseout', function(ev) {
-            infowindow3.close();
-        });
+    google.maps.event.addListener(cityCircle, 'mouseout', function(ev) {
+        infowindow.close();
+    });
 
-        google.maps.event.addListener(cityCircle,'click', function(ev){
-            window.parent.scroll(100, 200);
-            //creating toggle view
-            var modal = document.getElementById('myModal');
+}
 
-            // Get the <span> element that closes the modal
-            var span = document.getElementsByClassName("close")[0];
+function myFunction(currCircle) {
+    console.log("button clicked");
+    console.log(currCircle);
+    $("#detailsDiv").empty();
+    $('html, body').animate({
+        scrollTop: $("#detailsDiv").offset().top}, 1000);
+    //var stat = "<div class='container-fluid'> " + currCircle  + "</div>";
+    var stat = document.getElementById("mydiv");
+    $("#detailsDiv").append(stat);
+}
 
-            // When the user clicks the button, open the modal 
-                modal.style.display = "block";
+// When the user scrolls down 20px from the top of the document, show the button
+window.onscroll = function() {
+    scrollFunction()
+};
 
-            // When the user clicks on <span> (x), close the modal
-            span.onclick = function() {
-                modal.style.display = "none";
-                window.parent.scroll(0, -100);
-            }
-
-            // When the user clicks anywhere outside of the modal, close it
-            window.onclick = function(event) {
-                if (event.target == modal) {
-                    modal.style.display = "none";
-                }
-            }
-        });
-
-
-
+function scrollFunction() {
+    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        document.getElementById("myBtn").style.display = "block";
+    } else {
+        document.getElementById("myBtn").style.display = "none";
     }
+}
+
+// When the user clicks on the button, scroll to the top of the document
+function topFunction() {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+}
+
+
+/*google.maps.event.addListener(cityCircle, 'click', function(ev) {
+    window.parent.scroll(100, 200);
+    //creating toggle view
+    var modal = document.getElementById('myModal');
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks the button, open the modal 
+    modal.style.display = "block";
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+        modal.style.display = "none";
+        window.parent.scroll(0, -100);
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+});*/
+
 
 
     
@@ -248,7 +243,7 @@ function initMap() {
         alert("hi");
     }*/
 
-    marker.addListener('click', function() {
+    /*marker.addListener('click', function() {
         window.parent.scroll(100, 100);
         //window.scrollTo(0,document.documentElement.scrollHeight);
 
@@ -320,16 +315,16 @@ function initMap() {
 
         }*/
 
-    });
+   // });
 
 
 
     //google.maps.event.addDomListener(window, "load", initMap);
-}
+//}
 
 
 
-function modelblock() {
+/*function modelblock() {
     var modal = document.getElementById('myModal');
     modal.style.display = "block";
     var span = document.getElementsByClassName("close")[0];
@@ -375,4 +370,4 @@ function modelblock2() {
 
     //drawChart();
 
-}
+}*/
