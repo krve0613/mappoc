@@ -9,18 +9,24 @@
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+	<script type="text/javascript" src="jscript/graph.js"></script>
+	
 </head>
 <body>
     <div id="map"></div>
     <div class="container-fluid" id="detailsDiv"></div>
-
-    <div class="container-fluid" id="mydiv">newdiv
-    	<button>CMR4</button>
-    	<button>CMR5</button>
-    	<button>VMWare</button>
-    	<button>orion</button>
-    	<button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
+    <button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
+    <div class="chartcontainer">
+  		<h2>Data — Pie Chart Demo</h2>
+  		<div>
+    		<canvas id="myChart"></canvas>
+  		</div>
+	</div>
+    
     </div>
+    <div id="piechart" style="width: 400px; height: 500px;"></div>
     <div id="body2" style="height:1556px;width:564px;overflow:hidden">
 		<div id="myModal" class="modal">
 
@@ -34,7 +40,6 @@
 	</div>
     <script src="../js/app.js"></script>
     <script src="../js/data.js"></script>
-    
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9yz1wnRupXzaMMGYop2gQQgv_FlUpJNg&callback=initMap"
     async defer></script>
     <script src="../../db_connection.js"></script>

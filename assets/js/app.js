@@ -11,7 +11,7 @@ function initMap() {
     "use strict";
     // Create the map.
     var map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 2.2,
+        zoom: 2.4,
         center: {
             lat: 50.090,
             lng: -5.712
@@ -86,9 +86,9 @@ function bindInfoWindow(cityCircle, map, infowindow, html) {
             '<td>60</td></tr>' +
             '<tr><td>infra</td>' +
             '<td>100</td></tr>' +
-            '</table>' +
-            'for more data and chart representation click on this Marker ' +
-            '<button onclick="myFunction(currCircle)" id="herebtn">here</button>' +
+            '</table>' + 
+            '<div class="wrapper">' + 
+            '<button onclick="myFunction(currCircle)" id="herebtn">Details</button>' + '</div>'
             '</div>' +
             '</p>' +
             '</div>' +
@@ -115,8 +115,13 @@ function myFunction(currCircle) {
     $("#detailsDiv").empty();
     $('html, body').animate({
         scrollTop: $("#detailsDiv").offset().top}, 1000);
-    //var stat = "<div class='container-fluid'> " + currCircle  + "</div>";
-    var stat = document.getElementById("mydiv");
+    if(currCircle == 'sanjose' || currCircle == 'banglore' ){
+        var stat = "<div class='container-fluid' style='white-space: pre-wrap;'> " + currCircle  + '&#10;' + "<button onclick='drawChart()'>CMR4</button>" + '&nbsp;' + "<button onclick='drawChart()'>CMR5</button>" + '&nbsp;' +"<button onclick='drawChart2()''>VMWare</button>" + '&nbsp;' + "<button onclick='drawChart2()'>Infra</button>" + "<div class='chartcontainer'>"  + "<div><canvas id='myChart'></canvas></div>" + "</div>" +  "</div>";
+    }
+    else{
+        var stat = "<div class='container-fluid' style='white-space: pre-wrap;'> " + currCircle  + '&#10;' + "<button onclick='drawChart()'>CMR4</button>"  + '&nbsp;' + "<button onclick='drawChart2()'>VMWare</button>" + '&nbsp;' +"<button onclick='drawChart()'>Orion</button>" + "<div class='chartcontainer'>"  + "<div><canvas id='myChart'></canvas></div>" + "</div>" + "</div>";
+    }
+    //var stat = document.getElementById("mydiv");
     $("#detailsDiv").append(stat);
 }
 
@@ -137,6 +142,73 @@ function scrollFunction() {
 function topFunction() {
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
+}
+
+function drawChart() {
+    //google.load("visualization", "1", {packages: ["corechart"]});
+    //google.setOnLoadCallback(drawChart);
+
+    /*var data = google.visualization.arrayToDataTable([
+        ['Task', 'Hours per Day'],
+        ['Work', 11],
+        ['Eat', 2],
+        ['Commute', 2],
+        ['Watch TV', 2],
+        ['Sleep', 7]
+    ]);
+
+    var options = {
+        title: 'My Daily Activities'
+    };
+    var piechart;
+
+    var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+    chart.draw(data, options);*/
+
+    var ctx = document.getElementById("myChart").getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ["Green", "Blue", "Gray", "Purple", "Yellow", "Red", "Black"],
+            datasets: [{
+                backgroundColor: [
+                    "#2ecc71",
+                    "#3498db",
+                    "#95a5a6",
+                    "#9b59b6",
+                    "#f1c40f",
+                    "#e74c3c",
+                    "#34495e"
+                ],
+                data: [12, 19, 3, 17, 28, 24, 7]
+            }]
+        }
+    });
+
+}
+
+function drawChart2() {
+    var ctx = document.getElementById("myChart").getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ["dt-vcenter1", "dt-vcenter2", "dt-vcenter4", "dt-vcenter5", "vc-cloud", "ccatg_sjc_vc7", "ccatg_sjc_vc8"],
+            datasets: [{
+                backgroundColor: [
+                    "#2ecc71",
+                    "#3498db",
+                    "#95a5a6",
+                    "#9b59b6",
+                    "#f1c40f",
+                    "#e74c3c",
+                    "#34495e"
+                ],
+                data: [10, 19,6, 17, 28, 20, 11]
+            }]
+        }
+    });
+
 }
 
 
